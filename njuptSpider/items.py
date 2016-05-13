@@ -8,9 +8,6 @@
 import scrapy
 
 
-class NjuptspiderItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+class Item(scrapy.Item):
     title = scrapy.Field()
-    link = scrapy.Field()
-    desc = scrapy.Field()
+    url = scrapy.Field()
