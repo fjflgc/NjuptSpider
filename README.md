@@ -1,6 +1,4 @@
 # NjuptSpider
-用scrapy实现爬取南邮主页  
+实现爬南邮首页所有链接的标题和url并保存为json
 
-运行方法：在工程目录下运行scrapy crawl njuptIndexSpider  
-
-文件保存到工程目录下的www.njupt.edu.cn内
+运行方法：用pycharm直接运行或者在根目录直接终端运行scrapy crawl njupt
