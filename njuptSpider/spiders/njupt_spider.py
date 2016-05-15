@@ -1,6 +1,6 @@
 from scrapy.spiders import CrawlSpider
 from ..items import Item
-
+items = []
 
 # 实现爬南邮首页所有链接的标题和url并保存为json
 class NjuptSpider(CrawlSpider):
@@ -19,6 +19,9 @@ class NjuptSpider(CrawlSpider):
                 if 'http' not in url:
                     url = 'http://www.njupt.edu.cn' + url
                 item['url'] = url
+                if item in items:
+                    continue
+                items.append(item)
                 yield item
             else:
                 continue
