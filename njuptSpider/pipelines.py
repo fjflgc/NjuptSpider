@@ -22,7 +22,7 @@ class JsonPipeline(object):
         return pipeline
 
     def spider_opened(self, spider):
-        file = open('/home/gaoliang/Desktop/result.json', 'w+b')
+        file = open('./result.json', 'w+b')
         self.files[spider] = file
         self.exporter = JsonItemExporter(file, ensure_ascii=False)  # 添加ensure_ascii=False用于使json保存中文不乱码
         self.exporter.start_exporting()
