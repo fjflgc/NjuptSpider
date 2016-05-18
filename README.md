@@ -5,6 +5,6 @@
 
 已知问题：
 
-- 无法保存形如'<a href='baidu.com'><font>链接标题</font></a>'的在a标签内嵌套其他标签的链接
+- 无法保存形如&lt;a href=&#x27;baidu.com&#x27;&gt;&lt;font&gt;链接标题&lt;/font&gt;&lt;/a&gt;的在a标签内嵌套其他标签的链接
 
 - 无法增量爬取，且一次爬取需要耗费较长时间
