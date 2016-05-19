@@ -39,7 +39,7 @@ class NjuptSpider(CrawlSpider):
                     if r1.match(url):
                         items.append(item)
                         yield item
-                    if (not url.lower().endswith(trash)) and (not url.startswith('http://acm')):  # 不爬取noj和文件链接
+                    elif (not url.lower().endswith(trash)) and (not url.startswith('http://acm')):  # 不爬取noj和文件链接
                         yield Request(url, callback=self.parse)  # 如果url合法，对该url继续爬
             else:
                 continue
