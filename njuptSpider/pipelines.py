@@ -6,10 +6,12 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from scrapy import signals
-from scrapy.exporters import JsonItemExporter
 
 
 # 经过管道将符合条件的item保存，滤掉不符合条件的item
+from scrapy.exporters import JsonItemExporter
+
+
 class JsonPipeline(object):
     def __init__(self):
         self.files = {}
