@@ -40,6 +40,7 @@ class Pipeline(object):
     def process_item(self, item, spider):
         str = 'insert into showNews_news (branch,url,title) values '
         str += "('%s','%s','%s');\r\n" % (item['branch'], item['url'], item['title'])
+        print(str)
         ss = self.cur.execute(str)
         self.conn.commit()  # 各种教程都没提到提交这一步啊喂!!!!!!
         self.exporter.export_item(item)

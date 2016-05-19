@@ -2,7 +2,7 @@ from scrapy import Request
 from scrapy.spiders import BaseSpider
 from ..items import Item
 
-items = []
+urls = []
 trash = (
     'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar', 'pdf', 'ppt', 'pptx', 'pptm', 'mp3', 'jpg', 'gif', 'mp4', 'png', 'x',
     'rar')
@@ -44,12 +44,11 @@ class NjuptSpider(BaseSpider):
                     item['title'] = link.xpath('string(.)').extract()[0]
                 else:
                     continue
-
-                if (item in items) or ('mailto' in url) or ('javascript:' in url):  # 不爬取和保存邮箱链接,javascript链接
+                if (url in urls) or ('mailto' in url) or ('javascript:' in url):  # 不爬取和保存邮箱链接,javascript链接
                     continue
                 else:
+                    urls.append(url)
                     if r1.match(url):
-                        items.append(item)
                         yield item
                     elif (not url.lower().endswith(trash)) and (not url.startswith('http://acm')):  # 不爬取noj和文件链接
                         yield Request(url, callback=self.parse)  # 如果url合法，对该url继续爬
