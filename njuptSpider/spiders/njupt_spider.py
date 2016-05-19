@@ -1,5 +1,5 @@
 from scrapy import Request
-from scrapy.spiders import CrawlSpider
+from scrapy.spiders import BaseSpider
 from ..items import Item
 
 items = []
@@ -12,11 +12,20 @@ r1 = re.compile('[a-zA-z]+://[^\s]*info[1-9]*.htm$')  # 正则表达式匹配文
 
 
 # 实现爬南邮首页所有链接的标题和url并保存为json
-class NjuptSpider(CrawlSpider):
+class NjuptSpider(BaseSpider):
     name = "njupt"
     allowed_domains = ["njupt.edu.cn"]
     start_urls = [
-        "http://www.njupt.edu.cn/"
+        "http://www.njupt.edu.cn/",
+        'http://iam.njupt.edu.cn/',
+        'http://xjjs.njupt.edu.cn/',
+        'http://iids.njupt.edu.cn/',
+        'http://ipr.njupt.edu.cn/',
+        'http://wcd.njupt.edu.cn/',
+        'http://jxzx.njupt.edu.cn/',
+        'http://lib.njupt.edu.cn/',
+        'http://dag.njupt.edu.cn/',
+        'http://qks.njupt.edu.cn/',
     ]
 
     def parse(self, response):  # todo 处理a标签内嵌套其他标签作为标题的情况
@@ -24,14 +33,17 @@ class NjuptSpider(CrawlSpider):
             item = Item()
             if link.xpath('@href').extract():  # 判断a标签是否有href属性
                 url = link.xpath('@href').extract()[0]
-                if 'njupt.edu.cn' not in url:  # 将相对链接转换为绝对链接
+                if 'http://' not in url:  # 将相对链接转换为绝对链接
                     url = 'http://' + response.url.split('/')[2] + url
                 item['url'] = url
+                item['branch'] = response.url.split('/')[2]
                 if link.xpath('@title').extract():
                     item['title'] = link.xpath('@title').extract()[0]
                 elif link.xpath(
                         'string(.)').extract():
                     item['title'] = link.xpath('string(.)').extract()[0]
+                else:
+                    continue
 
                 if (item in items) or ('mailto' in url) or ('javascript:' in url):  # 不爬取和保存邮箱链接,javascript链接
                     continue

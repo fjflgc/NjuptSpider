@@ -11,3 +11,4 @@ import scrapy
 class Item(scrapy.Item):
     title = scrapy.Field()
     url = scrapy.Field()
+    branch = scrapy.Field()
