@@ -29,6 +29,7 @@ class Pipeline(object):
         self.files[spider] = file
         self.exporter = JsonItemExporter(file, ensure_ascii=False)  # 添加ensure_ascii=False用于使json保存中文不乱码
         self.exporter.start_exporting()
+        self.count = 0
 
     def spider_closed(self, spider):
         self.exporter.finish_exporting()
@@ -38,10 +39,16 @@ class Pipeline(object):
         self.conn.close()
 
     def process_item(self, item, spider):
-        str = 'insert into showNews_news (branch,url,title) values '
-        str += "('%s','%s','%s');\r\n" % (item['branch'], item['url'], item['title'])
-        print(str)
-        ss = self.cur.execute(str)
+        str = 'insert into showNews_test (date,url,content,title,count) values '
+        str += "('%s','%s','%s','%s','%s');\r\n" % (
+            item['date'], item['url'], item['content'], item['title'], item['count'])
+        print(item['title'])
+        try:
+            ss = self.cur.execute(str)
+            self.count = self.count + 1
+            print(self.count)
+        except pymysql.err.IntegrityError as e:
+            print("数据库中已存在")
         self.conn.commit()  # 各种教程都没提到提交这一步啊喂!!!!!!
         self.exporter.export_item(item)
         return item

@@ -12,3 +12,11 @@ class Item(scrapy.Item):
     title = scrapy.Field()
     url = scrapy.Field()
     branch = scrapy.Field()
+
+
+class ItemTest(scrapy.Item):
+    date = scrapy.Field()
+    title = scrapy.Field()
+    url = scrapy.Field()
+    content  = scrapy.Field()
+    count = scrapy.Field()
