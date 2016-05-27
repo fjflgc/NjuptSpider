@@ -18,5 +18,6 @@ class ItemTest(scrapy.Item):
     date = scrapy.Field()
     title = scrapy.Field()
     url = scrapy.Field()
-    content  = scrapy.Field()
+    content = scrapy.Field()
     count = scrapy.Field()
+    start_url = scrapy.Field()

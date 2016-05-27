@@ -6,6 +6,8 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
 from scrapy import signals
+
+
 # 经过管道将符合条件的item保存到数据库中，滤掉不符合条件的item
 
 class Pipeline(object):
@@ -28,12 +30,21 @@ class Pipeline(object):
         self.conn.close()
 
     def process_item(self, item, spider):
-        str = 'insert into showNews_test (date,url,content,title,count) values '
-        str += "('%s','%s','%s','%s','%s');\r\n" % (
-            item['date'], item['url'], item['content'], item['title'], item['count'])
-        try:
+        # 查找是否已经储存该文章，若已经储存，则进行比对和更新
+        str = "select * from showNews_test WHERE url ='%s';" % item['url']
+        if self.cur.execute(str):
+            data = self.cur.fetchall()[0][1]
+            if data != item['content']:
+                # 对文章内容进行文章内容更新
+                str = "update showNews_test set content=%s where url ='%s';" % (item['content'], item['url'])
+                self.conn.commit()
+                print("数据存在不同数据，并进行了更新")
+            else:
+                print("数据库中存在相同数据")
+        else:
+            str = 'insert into showNews_test (date,url,content,title,start_url) values '
+            str += "('%s','%s','%s','%s','%s');\r\n" % (
+                item['date'], item['url'], item['content'], item['title'], item['start_url'])
             ss = self.cur.execute(str)
-        except pymysql.err.IntegrityError as e:
-            print("数据库中已存在的文章")
-        self.conn.commit()  # 各种教程都没提到提交这一步啊喂!!!!!!
+            self.conn.commit()
         return item
