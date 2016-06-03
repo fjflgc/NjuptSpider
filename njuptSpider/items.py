@@ -7,16 +7,10 @@
 
 import scrapy
 
-
-class Item(scrapy.Item):
-    title = scrapy.Field()
-    url = scrapy.Field()
-    branch = scrapy.Field()
-
-
 class ItemTest(scrapy.Item):
     date = scrapy.Field()
     title = scrapy.Field()
     id = scrapy.Field()
     content = scrapy.Field()
     start_url = scrapy.Field()
+    url = scrapy.Field()

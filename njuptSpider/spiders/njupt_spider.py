@@ -1,10 +1,10 @@
 from scrapy import Request
 from scrapy.spiders import BaseSpider
-from ..items import Item, ItemTest
+from ..items import ItemTest
 import datetime
 import pymysql
 import re
-
+from readability.readability import Document
 # 链接为文件的后缀名
 urls = set([])
 
@@ -18,22 +18,6 @@ r1 = re.compile('[a-zA-z]+://[^\s]*info[0-9]*.htm$')  # 正则表达式匹配文
 r2 = re.compile('href="/[^\s]*"')
 r3 = re.compile('src="/[^\s]*"')
 r4 = re.compile('info[0-9]*')
-r5 = re.compile('http://(\w+)')
-
-# 各种方案匹配文章正文
-str4xpath_content = '//*[@class="content"] | //*[@class="p-content"] | //*[@id="content"] ' \
-                    '| //*[@class="pic-limit"]  | //*[@id="cont"] | //*[@class="content1"] |' \
-                    ' //*[@class="pagecontent"] | /html/body/div[1]/div[3]/tr[3]/td/tr' \
-                    '| //*[@id="infocontent"] | //*[@class="newsContentMain"] | //*[@id="wrapper"]/' \
-                    'table/tr[5]/td/div/div[4] | //*[@id="article"]/div[3] | ' \
-                    '//*[@id="border"]/table/tr[2]/td/table/tr[3]/td/table/tr/td | ' \
-                    '//*[@id="content"]/table[2]/tr/td[3]/table/tr[2]/td/table |' \
-                    '/html/body/div[1]/div[3]/table/tr[3]/td/table | ' \
-                    '//*[@id="wrapper"]/table/tr[5]/td/div/div/div[4] | ' \
-                    '//*[@id="two"]/table/tr[5]/td | /html/body/div[3]/table/tr/td/table/tr/td | ' \
-                    '/html/body/div[3]/table/tr/td/table/tr/td' \
-                    '| //*[@class="contentDiv"]'
-
 
 class NjuptSpider(BaseSpider):
     name = "njupt"
@@ -72,14 +56,13 @@ class NjuptSpider(BaseSpider):
             item['date'] = re.findall('[0-9]{4}-[0-9]{2}-[0-9]{2}', response.body.decode("utf-8"))[0]
         except IndexError:
             item['date'] = datetime.datetime.now().strftime("%Y-%m-%d")
-        content = response.xpath(
-            str4xpath_content).extract()[
-            0].replace("\'", '\"')
         # 转换相对链接为绝对链接
+        content = Document(response.body.decode('utf8')).summary(html_partial=True)
         for i in r2.findall(content):
             content = content.replace(i, 'href="http://' + response.url.split('/')[2] + i[6:])
         for i in r3.findall(content):
             content = content.replace(i, 'src="http://' + response.url.split('/')[2] + i[5:])
+        item['url'] = response.url
         item['content'] = content
         item['id'] = re.findall(r4, response.url)[0]
         item['title'] = response.xpath('//title/text()').extract()[0]

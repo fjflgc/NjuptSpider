@@ -39,9 +39,9 @@ class Pipeline(object):
                 str = "update ajex_text_detail set content=%s where id ='%s';" % (item['content'], item['id'])
                 self.conn.commit()
         else:
-            str = 'insert into ajex_text_detail (id,content,title) values '
-            str += "('%s','%s','%s');\r\n" % (
-                 item['id'], item['content'],item['title'])
+            str = 'insert into ajex_text_detail (id,content,title,url) values '
+            str += "('%s','%s','%s','%s');\r\n" % (
+                 item['id'], item['content'],item['title'],item['url'])
             str2 = 'insert into ajex_text_simple (title,date,start_url,id) values '
             str2+="('%s','%s','%s','%s');\r\n" % (item["title"],item['date'],item['start_url'],item['id'])
             try:
