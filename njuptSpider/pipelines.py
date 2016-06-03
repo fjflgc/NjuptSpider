@@ -22,7 +22,7 @@ class Pipeline(object):
         return pipeline
 
     def spider_opened(self, spider):
-        self.conn = pymysql.connect(host='localhost', user='root', passwd='mysqlGL0111', db='njuptInfo', charset='utf8')
+        self.conn = pymysql.connect(host='localhost', user='root', passwd='root', db='njuptInfo', charset='utf8')
         self.cur = self.conn.cursor()
 
     def spider_closed(self, spider):
@@ -31,20 +31,23 @@ class Pipeline(object):
 
     def process_item(self, item, spider):
         # 查找是否已经储存该文章，若已经储存，则进行比对和更新
-        str = "select * from showNews_test WHERE url ='%s';" % item['url']
+        str = "select * from ajex_text_detail WHERE id ='%s';" % item['id']
         if self.cur.execute(str):
             data = self.cur.fetchall()[0][1]
             if data != item['content']:
                 # 对文章内容进行文章内容更新
-                str = "update showNews_test set content=%s where url ='%s';" % (item['content'], item['url'])
+                str = "update ajex_text_detail set content=%s where id ='%s';" % (item['content'], item['id'])
                 self.conn.commit()
-                print("数据存在不同数据，并进行了更新")
-            else:
-                print("数据库中存在相同数据")
         else:
-            str = 'insert into showNews_test (date,url,content,title,start_url) values '
-            str += "('%s','%s','%s','%s','%s');\r\n" % (
-                item['date'], item['url'], item['content'], item['title'], item['start_url'])
-            ss = self.cur.execute(str)
+            str = 'insert into ajex_text_detail (id,content,title) values '
+            str += "('%s','%s','%s');\r\n" % (
+                 item['id'], item['content'],item['title'])
+            str2 = 'insert into ajex_text_simple (title,date,start_url,id) values '
+            str2+="('%s','%s','%s','%s');\r\n" % (item["title"],item['date'],item['start_url'],item['id'])
+            try:
+                self.cur.execute(str)
+                self.cur.execute(str2)
+            except pymysql.err.ProgrammingError as e:
+                print(item['content'])
             self.conn.commit()
         return item
