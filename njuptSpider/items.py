@@ -7,7 +7,9 @@
 
 import scrapy
 
-class ItemTest(scrapy.Item):
+
+class NewsItem(scrapy.Item):
+    """新闻对象类"""
     date = scrapy.Field()
     title = scrapy.Field()
     id = scrapy.Field()

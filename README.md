@@ -1,8 +1,10 @@
 # NjuptSpider
-实现递归爬取njupt.edu.cn域名下所有链接的标题和url并保存到项目根目录的result.json文件中
+爬取南邮所有的新闻动态并保存到mysql数据库
 
-运行方法：用pycharm直接运行或者在根目录直接终端运行scrapy crawl njupt
+运行方法：用pycharm直接运行或者在根目录直接终端运行scrapy crawl njupt，或者运行main.py
+1. 需要安装的第三方包
 
-已知问题：
+   `readability`  [下载地址][1]
 
-- 无法增量爬取，且一次爬取需要耗费较长时间
+
+  [1]: https://github.com/buriy/python-readability
